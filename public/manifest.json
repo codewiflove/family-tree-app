@@ -1,0 +1,37 @@
+{
+  "name": "Salasilah Keluarga",
+  "short_name": "Keluarga",
+  "description": "Aplikasi Pokok Keluarga Malaysia dengan penyimpanan tempatan",
+  "lang": "ms-MY",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#667eea",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/vite.svg",
+      "sizes": "48x48 72x72 96x96 128x128 256x256",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ],
+  "categories": ["lifestyle", "productivity", "utilities"],
+  "screenshots": [],
+  "shortcuts": [
+    {
+      "name": "Tambah Ahli Baru",
+      "short_name": "Tambah",
+      "description": "Tambah ahli keluarga baru",
+      "url": "/?action=add",
+      "icons": [{ "src": "/vite.svg", "sizes": "96x96" }]
+    },
+    {
+      "name": "Lihat Pokok Keluarga",
+      "short_name": "Pokok",
+      "description": "Lihat visual pokok keluarga",
+      "url": "/?tab=family-tree",
+      "icons": [{ "src": "/vite.svg", "sizes": "96x96" }]
+    }
+  ]
+}
