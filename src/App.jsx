@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { FiHome, FiUsers, FiList, FiUser, FiSettings } from 'react-icons/fi';
+import { FiHome, FiUsers, FiList, FiUser } from 'react-icons/fi';
 import { MdFamilyRestroom, MdCake, MdPhone, MdWhatsapp } from 'react-icons/md';
 import Dashboard from './components/Dashboard';
 import FamilyTree from './components/FamilyTree';
@@ -9,6 +9,7 @@ import { loadSampleData } from './utils/sampleData';
 import './App.css';
 
 function App() {
+  console.log('App component rendering...');
   const [activeTab, setActiveTab] = useState('dashboard');
   const [members, setMembers] = useState([]);
   const [userName, setUserName] = useState('Ahli Keluarga');
