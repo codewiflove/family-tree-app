@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { FiHome, FiUsers, FiList, FiUser } from 'react-icons/fi';
 import { MdFamilyRestroom, MdCake, MdPhone, MdWhatsapp } from 'react-icons/md';
 import Dashboard from './components/Dashboard';
-import FamilyTree from './components/FamilyTree';
+import FamilyTreeSimple from './components/FamilyTree-simple';
 import Directory from './components/Directory';
 import { familyStorage } from './utils/storage';
 import { loadSampleData } from './utils/sampleData';
@@ -125,23 +125,12 @@ function App() {
         )}
         
         {activeTab === 'family-tree' && (
-          <div className="card">
-            <h3>🌳 Pokok Keluarga</h3>
-            <p>Fitur pokok keluarga sedang dimuatkan...</p>
-            <p>Jumlah ahli: {members.length}</p>
-            <button 
-              className="btn btn-primary mt-3"
-              onClick={() => alert('Fitur pokok keluarga akan datang!')}
-            >
-              Lihat Demo
-            </button>
-          </div>
-          // <FamilyTree 
-          //   members={members}
-          //   onAddMember={handleAddMember}
-          //   onUpdateMember={handleUpdateMember}
-          //   onDeleteMember={handleDeleteMember}
-          // />
+          <FamilyTreeSimple 
+            members={members}
+            onAddMember={handleAddMember}
+            onUpdateMember={handleUpdateMember}
+            onDeleteMember={handleDeleteMember}
+          />
         )}
         
         {activeTab === 'directory' && (
