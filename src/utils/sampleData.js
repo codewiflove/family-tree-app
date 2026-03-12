@@ -32,7 +32,7 @@ export const sampleFamilyData = [
     no_telefon: "+60131122334",
     pekerjaan: "Doktor",
     lokasi: "Kuala Lumpur",
-    gambar_profil_url: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w-400&h=400&fit=crop",
+    gambar_profil_url: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&h=400&fit=crop",
     parent_id: "root-1",
     spouse_id: "child-2"
   },

@@ -125,12 +125,23 @@ function App() {
         )}
         
         {activeTab === 'family-tree' && (
-          <FamilyTree 
-            members={members}
-            onAddMember={handleAddMember}
-            onUpdateMember={handleUpdateMember}
-            onDeleteMember={handleDeleteMember}
-          />
+          <div className="card">
+            <h3>🌳 Pokok Keluarga</h3>
+            <p>Fitur pokok keluarga sedang dimuatkan...</p>
+            <p>Jumlah ahli: {members.length}</p>
+            <button 
+              className="btn btn-primary mt-3"
+              onClick={() => alert('Fitur pokok keluarga akan datang!')}
+            >
+              Lihat Demo
+            </button>
+          </div>
+          // <FamilyTree 
+          //   members={members}
+          //   onAddMember={handleAddMember}
+          //   onUpdateMember={handleUpdateMember}
+          //   onDeleteMember={handleDeleteMember}
+          // />
         )}
         
         {activeTab === 'directory' && (
