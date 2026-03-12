@@ -22,9 +22,13 @@ const FamilyTreeSimple = ({ members, onAddMember, onUpdateMember, onDeleteMember
   };
 
   // Render a member node
-  const renderMemberNode = (member, depth = 0) => {
+  const renderMemberNode = (member, depth = 0, renderedSpouses = new Set()) => {
     const children = getChildren(member.id);
     const spouse = getSpouse(member.id);
+    
+    // Add this member to rendered spouses to prevent infinite recursion
+    const updatedRenderedSpouses = new Set(renderedSpouses);
+    updatedRenderedSpouses.add(member.id);
     
     return (
       <div key={member.id} style={{ marginLeft: `${depth * 40}px`, marginBottom: '20px' }}>
@@ -41,11 +45,11 @@ const FamilyTreeSimple = ({ members, onAddMember, onUpdateMember, onDeleteMember
           />
         </div>
         
-        {/* Render spouse if exists */}
-        {spouse && (
+        {/* Render spouse if exists AND not already rendered */}
+        {spouse && !renderedSpouses.has(spouse.id) && (
           <div style={{ marginLeft: '20px', marginTop: '10px' }}>
             <div style={{ fontSize: '0.8rem', color: 'var(--airbnb-light)', marginBottom: '5px' }}>Pasangan:</div>
-            {renderMemberNode(spouse, depth)}
+            {renderMemberNode(spouse, depth, updatedRenderedSpouses)}
           </div>
         )}
         
@@ -55,7 +59,7 @@ const FamilyTreeSimple = ({ members, onAddMember, onUpdateMember, onDeleteMember
             <div style={{ fontSize: '0.8rem', color: 'var(--airbnb-light)', marginBottom: '5px' }}>
               Anak ({children.length}):
             </div>
-            {children.map(child => renderMemberNode(child, depth + 1))}
+            {children.map(child => renderMemberNode(child, depth + 1, updatedRenderedSpouses))}
           </div>
         )}
       </div>
@@ -162,7 +166,7 @@ const FamilyTreeSimple = ({ members, onAddMember, onUpdateMember, onDeleteMember
             </div>
             
             <div style={{ maxHeight: '500px', overflowY: 'auto', padding: '10px' }}>
-              {rootMembers.map(member => renderMemberNode(member))}
+              {rootMembers.map(member => renderMemberNode(member, 0, new Set()))}
             </div>
             
             <div className="mt-4 pt-4" style={{ borderTop: '1px solid rgba(0,0,0,0.08)' }}>
@@ -184,9 +188,14 @@ const FamilyTreeSimple = ({ members, onAddMember, onUpdateMember, onDeleteMember
                     {Math.max(...members.map(m => {
                       let depth = 0;
                       let current = m;
-                      while (current.parent_id) {
+                      const visited = new Set();
+                      
+                      while (current.parent_id && !visited.has(current.id)) {
+                        visited.add(current.id);
                         depth++;
-                        current = members.find(mm => mm.id === current.parent_id);
+                        const parent = members.find(mm => mm.id === current.parent_id);
+                        if (!parent) break; // Parent not found
+                        current = parent;
                       }
                       return depth;
                     }), 0) + 1}
