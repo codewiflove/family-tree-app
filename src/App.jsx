@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { FiHome, FiUsers, FiList, FiUser, FiSettings } from 'react-icons/fi';
+import { MdFamilyRestroom, MdCake, MdPhone, MdWhatsapp } from 'react-icons/md';
 import Dashboard from './components/Dashboard';
 import FamilyTree from './components/FamilyTree';
 import Directory from './components/Directory';
@@ -9,7 +11,9 @@ import './App.css';
 function App() {
   const [activeTab, setActiveTab] = useState('dashboard');
   const [members, setMembers] = useState([]);
-  const [userName, setUserName] = useState('Pengguna');
+  const [userName, setUserName] = useState('Ahli Keluarga');
+  const [showNameModal, setShowNameModal] = useState(false);
+  const [newUserName, setNewUserName] = useState('');
 
   // Load data on initial render
   useEffect(() => {
@@ -20,8 +24,9 @@ function App() {
     setMembers(loadedMembers);
     
     // Try to get user name from localStorage or use default
-    const savedName = localStorage.getItem('family_tree_user_name') || 'Pengguna';
+    const savedName = localStorage.getItem('family_tree_user_name') || 'Ahli Keluarga';
     setUserName(savedName);
+    setNewUserName(savedName);
   }, []);
 
   // Handle adding new member
@@ -49,58 +54,67 @@ function App() {
   };
 
   // Update user name
-  const handleUpdateUserName = (name) => {
-    setUserName(name);
-    localStorage.setItem('family_tree_user_name', name);
+  const handleUpdateUserName = () => {
+    if (newUserName.trim()) {
+      setUserName(newUserName.trim());
+      localStorage.setItem('family_tree_user_name', newUserName.trim());
+      setShowNameModal(false);
+    }
   };
 
+  // Calculate statistics
+  const totalMembers = members.length;
+  const activeGenerations = new Set(members.map(m => {
+    const age = m.tarikh_lahir ? Math.floor((new Date() - new Date(m.tarikh_lahir)) / (365.25 * 24 * 60 * 60 * 1000)) : 0;
+    return Math.floor(age / 20); // Group by 20-year generations
+  })).size;
+  
+  const familyBranches = new Set(members.filter(m => m.parent_id === null).map(m => m.id)).size;
+
   return (
-    <div className="app">
-      {/* Header */}
+    <div className="container">
+      {/* Airbnb-style Header */}
       <header className="app-header">
         <div className="header-content">
-          <h1>🌳 Salasilah Keluarga</h1>
-          <div className="user-greeting">
-            <span>Hai, {userName}!</span>
-            <button 
-              className="edit-name-btn"
-              onClick={() => {
-                const newName = prompt('Masukkan nama anda:', userName);
-                if (newName && newName.trim()) {
-                  handleUpdateUserName(newName.trim());
-                }
-              }}
-            >
-              ✏️
-            </button>
+          <div className="header-title">🏠 Salasilah</div>
+          <div 
+            className="user-greeting"
+            onClick={() => setShowNameModal(true)}
+            style={{ cursor: 'pointer' }}
+          >
+            <FiUser />
+            <span>{userName}</span>
+          </div>
+        </div>
+      </header>
+
+      {/* Quick Stats Bar (Airbnb-style) */}
+      <div className="grid grid-3 mt-3">
+        <div className="metrics-card">
+          <div className="text-center">
+            <div style={{ fontSize: '2rem', fontWeight: 'bold' }}>{totalMembers}</div>
+            <div style={{ fontSize: '0.9rem', opacity: 0.9 }}>Ahli</div>
           </div>
         </div>
         
-        {/* Navigation Tabs */}
-        <nav className="app-nav">
-          <button 
-            className={`nav-btn ${activeTab === 'dashboard' ? 'active' : ''}`}
-            onClick={() => setActiveTab('dashboard')}
-          >
-            📊 Dashboard
-          </button>
-          <button 
-            className={`nav-btn ${activeTab === 'family-tree' ? 'active' : ''}`}
-            onClick={() => setActiveTab('family-tree')}
-          >
-            🌳 Pokok Keluarga
-          </button>
-          <button 
-            className={`nav-btn ${activeTab === 'directory' ? 'active' : ''}`}
-            onClick={() => setActiveTab('directory')}
-          >
-            📋 Direktori
-          </button>
-        </nav>
-      </header>
+        <div className="metrics-card" style={{ background: 'linear-gradient(135deg, var(--airbnb-secondary), #00C2B2)' }}>
+          <div className="text-center">
+            <div style={{ fontSize: '2rem', fontWeight: 'bold' }}>{activeGenerations}</div>
+            <div style={{ fontSize: '0.9rem', opacity: 0.9 }}>Generasi</div>
+          </div>
+        </div>
+        
+        <div className="metrics-card" style={{ background: 'linear-gradient(135deg, var(--airbnb-accent), #FFC233)' }}>
+          <div className="text-center">
+            <div style={{ fontSize: '2rem', fontWeight: 'bold' }}>{familyBranches}</div>
+            <div style={{ fontSize: '0.9rem', opacity: 0.9 }}>Cabang</div>
+          </div>
+        </div>
+      </div>
 
-      {/* Main Content */}
+      {/* Main Content Area */}
       <main className="app-main">
+        {/* Tab Content */}
         {activeTab === 'dashboard' && (
           <Dashboard 
             members={members}
@@ -127,13 +141,110 @@ function App() {
         )}
       </main>
 
-      {/* Footer */}
-      <footer className="app-footer">
-        <p>© 2024 Salasilah Keluarga MVP - Dibangunkan dengan ❤️ untuk keluarga Malaysia</p>
-        <p className="footer-note">
-          Data disimpan secara tempatan dalam penyemak imbas anda. Tiada login diperlukan.
-        </p>
-      </footer>
+      {/* Bottom Navigation (Mobile-First) */}
+      <nav className="bottom-nav">
+        <button 
+          className={`nav-item ${activeTab === 'dashboard' ? 'active' : ''}`}
+          onClick={() => setActiveTab('dashboard')}
+          style={{ background: 'none', border: 'none', cursor: 'pointer' }}
+        >
+          <FiHome className="nav-icon" />
+          <span className="nav-label">Utama</span>
+        </button>
+        
+        <button 
+          className={`nav-item ${activeTab === 'family-tree' ? 'active' : ''}`}
+          onClick={() => setActiveTab('family-tree')}
+          style={{ background: 'none', border: 'none', cursor: 'pointer' }}
+        >
+          <MdFamilyRestroom className="nav-icon" />
+          <span className="nav-label">Salasilah</span>
+        </button>
+        
+        <button 
+          className={`nav-item ${activeTab === 'directory' ? 'active' : ''}`}
+          onClick={() => setActiveTab('directory')}
+          style={{ background: 'none', border: 'none', cursor: 'pointer' }}
+        >
+          <FiList className="nav-icon" />
+          <span className="nav-label">Direktori</span>
+        </button>
+        
+        <button 
+          className="nav-item"
+          onClick={() => {
+            // Quick add member action
+            const name = prompt('Nama ahli baru:');
+            if (name && name.trim()) {
+              handleAddMember({
+                nama_penuh: name.trim(),
+                jantina: 'Lelaki',
+                tarikh_lahir: new Date().toISOString().split('T')[0],
+                no_telefon: '',
+                pekerjaan: '',
+                lokasi: '',
+                gambar_profil_url: '',
+                parent_id: null,
+                spouse_id: null
+              });
+            }
+          }}
+          style={{ background: 'none', border: 'none', cursor: 'pointer' }}
+        >
+          <FiUsers className="nav-icon" />
+          <span className="nav-label">Tambah</span>
+        </button>
+      </nav>
+
+      {/* Name Update Modal */}
+      {showNameModal && (
+        <div className="modal-overlay" onClick={() => setShowNameModal(false)}>
+          <div className="modal-content" onClick={e => e.stopPropagation()}>
+            <h3 className="mb-4">Kemas Nama Anda</h3>
+            <div className="input-group">
+              <input
+                type="text"
+                className="input-field"
+                value={newUserName}
+                onChange={(e) => setNewUserName(e.target.value)}
+                placeholder="Masukkan nama anda"
+                autoFocus
+              />
+            </div>
+            <div style={{ display: 'flex', gap: 'var(--space-md)', marginTop: 'var(--space-lg)' }}>
+              <button 
+                className="btn btn-outline"
+                onClick={() => setShowNameModal(false)}
+                style={{ flex: 1 }}
+              >
+                Batal
+              </button>
+              <button 
+                className="btn btn-primary"
+                onClick={handleUpdateUserName}
+                style={{ flex: 1 }}
+              >
+                Simpan
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Birthday Notifications */}
+      {members.some(m => {
+        if (!m.tarikh_lahir) return false;
+        const today = new Date();
+        const bday = new Date(m.tarikh_lahir);
+        return bday.getMonth() === today.getMonth() && bday.getDate() === today.getDate();
+      }) && (
+        <div className="toast">
+          <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-sm)' }}>
+            <MdCake />
+            <span>Ada ahli keluarga yang berhari jadi hari ini! 🎂</span>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
