@@ -240,21 +240,21 @@ const Dashboard = ({ members, onAddMember, userName }) => {
             <div className="grid grid-3 text-center">
               <div>
                 <div className="text-primary" style={{ fontSize: '1.5rem', fontWeight: 'bold' }}>
-                  {stats.averageAge.toFixed(1)}
+                  {stats.averageAge > 0 ? stats.averageAge.toFixed(1) : 'N/A'}
                 </div>
                 <div className="text-light" style={{ fontSize: '0.8rem' }}>Umur Purata</div>
               </div>
               
               <div>
                 <div className="text-secondary" style={{ fontSize: '1.5rem', fontWeight: 'bold' }}>
-                  {stats.oldestAge}
+                  {stats.oldestAge > 0 ? stats.oldestAge : 'N/A'}
                 </div>
                 <div className="text-light" style={{ fontSize: '0.8rem' }}>Tertua</div>
               </div>
               
               <div>
                 <div className="text-accent" style={{ fontSize: '1.5rem', fontWeight: 'bold' }}>
-                  {stats.youngestAge}
+                  {stats.youngestAge > 0 ? stats.youngestAge : 'N/A'}
                 </div>
                 <div className="text-light" style={{ fontSize: '0.8rem' }}>Termuda</div>
               </div>

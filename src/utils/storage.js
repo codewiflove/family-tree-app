@@ -123,12 +123,28 @@ export const familyStorage = {
     // Find unique family branches (by root ancestors)
     const roots = members.filter(member => !member.parent_id);
     
+    // Calculate age statistics
+    const membersWithAge = members.filter(m => m.tarikh_lahir);
+    let averageAge = 0;
+    let oldestAge = 0;
+    let youngestAge = 0;
+    
+    if (membersWithAge.length > 0) {
+      const ages = membersWithAge.map(member => familyStorage.calculateAge(member.tarikh_lahir));
+      averageAge = ages.reduce((sum, age) => sum + age, 0) / ages.length;
+      oldestAge = Math.max(...ages);
+      youngestAge = Math.min(...ages);
+    }
+    
     return {
       totalMembers: members.length,
       lelakiCount,
       perempuanCount,
       activeGenerations: generations.size,
-      familyBranches: roots.length
+      familyBranches: roots.length,
+      averageAge,
+      oldestAge,
+      youngestAge
     };
   },
 
